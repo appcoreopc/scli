@@ -2,9 +2,13 @@ package main
 
 import (
 	"github.com/appcoreopc/scli/cmd"
+	"github.com/appcoreopc/scli/httpClient"
 )
 
 func main() {
 
 	cmd.Execute()
+	c := httpClient.Client{}
+	c.Download("http://www.golang-book.com/public/pdf/gobook.pdf")
+
 }
