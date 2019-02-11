@@ -21,10 +21,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Verbose bool
+
 // rootCmd represents the root command
 var rootCmd = &cobra.Command{
-	Use:   "root",
-	Short: "A brief description of your command",
+	Use:              "root",
+	TraverseChildren: true,
+	Short:            "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -37,13 +40,22 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(initCmd)
-	rootCmd.AddCommand(updateCmd)
+
+	fmt.Println("executing main root cmd ")
+	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
+	rootCmd.MarkFlagRequired("verbose")
 }
 
 func Execute() {
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	}
+
+	fmt.Println("i think we are running here")
+
+	if Verbose == true {
+		fmt.Println("setting to verbose mode")
 	}
 }
