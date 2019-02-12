@@ -1,6 +1,7 @@
-package fops
+package Fops
 
 import (
+	"log"
 	"os"
 )
 
@@ -13,6 +14,24 @@ func (f *FileService) Exist(path string) bool {
 		return true
 	}
 	return false
+}
+
+func (f *FileService) RemoveDir(path string) bool {
+
+	err := os.Remove(path)
+	if err != nil {
+		return true
+	}
+	return false
+}
+
+func (f *FileService) CreateDir(path string) bool {
+
+	if err := os.MkdirAll(path, 07555); err != nil {
+		log.Println("Unable create directory: ", path)
+		return false
+	}
+	return true
 }
 
 func (f *FileService) Unpack(zipFile string) {

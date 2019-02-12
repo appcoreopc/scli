@@ -1,4 +1,4 @@
-package fops
+package Fops
 
 import (
 	"archive/zip"
