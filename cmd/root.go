@@ -19,6 +19,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var Verbose bool
@@ -44,6 +45,13 @@ func init() {
 	fmt.Println("executing main root cmd ")
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 	rootCmd.MarkFlagRequired("verbose")
+
+	viper.SetConfigName("config") // name of config file (without extension)
+	viper.AddConfigPath(".")      // optionally look for config in the working directory
+	err := viper.ReadInConfig()   // Find and read the config file
+	if err != nil {               // Handle errors reading the config file
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}
 }
 
 func Execute() {
@@ -53,9 +61,13 @@ func Execute() {
 		os.Exit(1)
 	}
 
+	a := viper.Get("Name")
+	fmt.Println("test", a)
+
 	fmt.Println("i think we are running here")
 
 	if Verbose == true {
 		fmt.Println("setting to verbose mode")
 	}
+
 }
