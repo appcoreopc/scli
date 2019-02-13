@@ -18,6 +18,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/appcoreopc/scli/Model"
+
+	"github.com/appcoreopc/scli/Services"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -49,9 +53,15 @@ func init() {
 	viper.SetConfigName("config") // name of config file (without extension)
 	viper.AddConfigPath(".")      // optionally look for config in the working directory
 	err := viper.ReadInConfig()   // Find and read the config file
-	if err != nil {               // Handle errors reading the config file
+
+	if err != nil { // Handle errors reading the config file
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
+
+	//viper.AddRemoteProvider("etcd", "http://127.0.0.1:2389", "/v2/keys/message")
+	//viper.SetConfigType("json") // because there is no file extension in a stream of bytes, supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop"
+	//viper.SetConfigName("settings")
+	//viper.ReadRemoteConfig()
 }
 
 func Execute() {
@@ -61,13 +71,19 @@ func Execute() {
 		os.Exit(1)
 	}
 
-	a := viper.Get("Name")
-	fmt.Println("test", a)
-
-	fmt.Println("i think we are running here")
-
 	if Verbose == true {
 		fmt.Println("setting to verbose mode")
 	}
+
+	fmt.Println("value", viper.Get("name"))
+
+	settingModel := &Model.CliSettingsModel{}
+	settingModel.CommandPath = "command.cli" // viper.Get("CommandPath").(string)
+	settingModel.CurrentVersion = 2.0
+	settingModel.InstallVersion = 1.0
+	settingModel.ServiceUrl = "http://test.com/command.cli.zip"
+	svc := Services.CliService{}
+
+	svc.Execute(settingModel)
 
 }

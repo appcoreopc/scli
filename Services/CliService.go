@@ -1,8 +1,7 @@
-package services
+package Services
 
 import (
-	"fmt"
-	"strconv"
+	"log"
 
 	"github.com/appcoreopc/scli/Fops"
 	"github.com/appcoreopc/scli/HttpClient"
@@ -15,50 +14,25 @@ type CliService struct {
 // Any default configuration get from a service
 // which a just a simple key / value db
 
-func (s *CliService) Execute(commandPath string) {
+func (s *CliService) Execute(cliSettingsModel *Model.CliSettingsModel) {
 
-	s.InitVersioningCheck()
+	log.Println("cli service executing")
+
+	if s.InitVersioningCheck(cliSettingsModel.InstallVersion, cliSettingsModel.CurrentVersion) {
+
+		log.Println("Download package from " + cliSettingsModel.ServiceUrl)
+		c := HttpClient.Client{}
+		c.Download(cliSettingsModel.ServiceUrl)
+	}
 
 	// Continue running //
 	// check directory exist
 	fs := Fops.FileService{}
-	if fs.Exist(commandPath) {
+	if fs.Exist(cliSettingsModel.CommandPath) {
 		// show help or run argument
 	}
 }
 
-func (s *CliService) InitVersioningCheck() int {
-
-	hc := &HttpClient.Client{}
-	// checks service
-	settings := Model.CliSettingsModel{}
-	_ = hc.GetJson("calls a default service", &settings)
-
-	version, err := strconv.Atoi(settings.Version)
-	if err != nil {
-		fmt.Println("error converting to integer")
-	}
-
-	switch version {
-
-	case 0:
-		break
-	case 1:
-
-	}
-
-	return 0
-}
-
-type ActionType int
-
-const (
-	NoAction ActionType = iota
-	Upgrade
-	ReInstallCli
-)
-
-func (a ActionType) ToString() string {
-
-	return [...]string{"No Action", "Upgrade", "ReInstallCli"}[a]
+func (s *CliService) InitVersioningCheck(installedVersion, currentVersion float32) bool {
+	return currentVersion > installedVersion
 }

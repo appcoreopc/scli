@@ -1,0 +1,5 @@
+{
+    "Service" : "http://localhost",
+    "Version" : "1.0",
+    "Package" : "http://www.test.com/command.cli.zip"
+}
