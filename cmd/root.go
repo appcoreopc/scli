@@ -50,21 +50,24 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 	rootCmd.MarkFlagRequired("verbose")
 
-	viper.SetConfigName("config") // name of config file (without extension)
-	viper.AddConfigPath(".")      // optionally look for config in the working directory
-	err := viper.ReadInConfig()   // Find and read the config file
+	//viper.SetConfigName("config") // name of config file (without extension)
+	//viper.AddConfigPath(".")      // optionally look for config in the working directory
+	//err := viper.ReadInConfig()   // Find and read the config file
 
-	if err != nil { // Handle errors reading the config file
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
-	}
+	// if err != nil { // Handle errors reading the config file
+	// 	panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	// }
 
-	//viper.AddRemoteProvider("etcd", "http://127.0.0.1:2389", "/v2/keys/message")
-	//viper.SetConfigType("json") // because there is no file extension in a stream of bytes, supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop"
-	//viper.SetConfigName("settings")
-	//viper.ReadRemoteConfig()
+	viper.AddRemoteProvider("etcd", "http://127.0.0.1:4001", "")
+	viper.SetConfigType("json") // because there is no file extension in a stream of bytes, supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop"
+	viper.SetConfigName("settings")
+	viper.ReadRemoteConfig()
+
 }
 
 func Execute() {
+
+	fmt.Println("settings", viper.Get("CommandPath"))
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -75,15 +78,17 @@ func Execute() {
 		fmt.Println("setting to verbose mode")
 	}
 
-	fmt.Println("value", viper.Get("name"))
+	if Verbose == true {
 
-	settingModel := &Model.CliSettingsModel{}
-	settingModel.CommandPath = "command.cli" // viper.Get("CommandPath").(string)
-	settingModel.CurrentVersion = 1.0
-	settingModel.InstallVersion = 1.0
-	settingModel.ServiceUrl = "http://test.com/command.cli.zip"
-	svc := Services.CliService{}
+		fmt.Println("value", viper.Get("name"))
 
-	svc.Execute(settingModel)
+		settingModel := &Model.CliSettingsModel{}
+		settingModel.CommandPath = "command.cli" // viper.Get("CommandPath").(string)
+		settingModel.CurrentVersion = 1.0
+		settingModel.InstallVersion = 1.0
+		settingModel.ServiceUrl = "http://test.com/command.cli.zip"
+		svc := Services.CliService{}
+		svc.Execute(settingModel)
 
+	}
 }
