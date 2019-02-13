@@ -79,7 +79,7 @@ func Execute() {
 
 	settingModel := &Model.CliSettingsModel{}
 	settingModel.CommandPath = "command.cli" // viper.Get("CommandPath").(string)
-	settingModel.CurrentVersion = 2.0
+	settingModel.CurrentVersion = 1.0
 	settingModel.InstallVersion = 1.0
 	settingModel.ServiceUrl = "http://test.com/command.cli.zip"
 	svc := Services.CliService{}

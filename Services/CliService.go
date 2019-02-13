@@ -23,14 +23,18 @@ func (s *CliService) Execute(cliSettingsModel *Model.CliSettingsModel) {
 		log.Println("Download package from " + cliSettingsModel.ServiceUrl)
 		c := HttpClient.Client{}
 		c.Download(cliSettingsModel.ServiceUrl)
+
+		// unzip //
+		fz := Fops.FileUnzipper{}
+		fz.Unzip("command.cli.zip", ".")
 	}
 
-	// Continue running //
-	// check directory exist
-	fs := Fops.FileService{}
-	if fs.Exist(cliSettingsModel.CommandPath) {
-		// show help or run argument
-	}
+	// Continue reading and displaying help //
+
+	jr := Fops.JsonReader{}
+	jr.GetCommandJson("command.cli/command.cli.json")
+	
+
 }
 
 func (s *CliService) InitVersioningCheck(installedVersion, currentVersion float32) bool {

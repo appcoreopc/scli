@@ -1,5 +1,6 @@
 {
-    "Service" : "http://localhost",
-    "Version" : "1.0",
-    "Package" : "http://www.test.com/command.cli.zip"
+    "CommandPath" : "command.cli",
+    "CurrentVersion" : "1.0",
+    "InstallVersion" : "2.0",
+    "ServiceUrl" : "http://www.test.com/command.cli.zip"
 }

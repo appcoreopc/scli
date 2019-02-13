@@ -1,0 +1,18 @@
+{
+  "name" : "jeremy",
+  "desciption" : "kepung@gmail.com",
+  "tools" : [
+    {
+      "name" : "tool1", 
+      "description" : "project tools",
+      "version" : "v1",
+      "command" : "echo"
+    },
+    {
+      "name" : "tool2", 
+      "description" : "provisioning tool",
+      "version" : "v1",
+      "command" : "echo"
+    }
+  ]
+}
