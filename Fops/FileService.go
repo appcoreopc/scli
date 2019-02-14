@@ -34,21 +34,16 @@ func (f *FileService) CreateDir(path string) bool {
 	return true
 }
 
-func (f *FileService) Unpack(zipFile string) {
-
-	if !f.Exist(f.defaultFolder) {
-		os.MkdirAll(f.defaultFolder, 0755)
-	}
-
-	f.Unzip(zipFile)
-}
-
-func (f *FileService) Unzip(zipfile string) {
-
-}
-
 func (f *FileService) New() FileService {
 	fs := FileService{}
 	fs.defaultFolder = "command.cli"
 	return fs
+}
+
+type IFileService interface {
+	Exist(path string) bool
+
+	CreateDir(path string) bool
+
+	RemoveDir(path string) bool
 }

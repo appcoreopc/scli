@@ -18,10 +18,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/appcoreopc/scli/Fops"
 	"github.com/appcoreopc/scli/Model"
-
 	"github.com/appcoreopc/scli/Services"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -40,7 +39,9 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		fmt.Println("root called")
+		ShowToolsHelp()
 	},
 }
 
@@ -53,26 +54,17 @@ func init() {
 	//viper.SetConfigName("config") // name of config file (without extension)
 	//viper.AddConfigPath(".")      // optionally look for config in the working directory
 	//err := viper.ReadInConfig()   // Find and read the config file
-
 	// if err != nil { // Handle errors reading the config file
 	// 	panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	// }
 
-	viper.AddRemoteProvider("etcd", "http://127.0.0.1:4001", "")
+	viper.AddRemoteProvider("etcd", "http://127.0.0.1:2379", "v2/keys/settings")
 	viper.SetConfigType("json") // because there is no file extension in a stream of bytes, supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop"
 	viper.SetConfigName("settings")
 	viper.ReadRemoteConfig()
-
 }
 
 func Execute() {
-
-	fmt.Println("settings", viper.Get("CommandPath"))
-
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 
 	if Verbose == true {
 		fmt.Println("setting to verbose mode")
@@ -91,4 +83,27 @@ func Execute() {
 		svc.Execute(settingModel)
 
 	}
+
+	if err := rootCmd.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func ShowToolsHelp() {
+
+	jr := Fops.JsonReader{}
+
+	cmdJson := jr.GetCommandJson("command.cli/command.cli.json").(Model.CommandCliModel)
+
+	fmt.Println("Tools available")
+	fmt.Println("--------------------------------------------------------")
+	for _, element := range cmdJson.Tools {
+		fmt.Println("Tool name ", element.Name)
+		fmt.Println("Description ", element.Description)
+		fmt.Println("Version", element.Version)
+		fmt.Println("Commad line", element.Command)
+		fmt.Println("--------------------------------------------------------")
+	}
+
 }

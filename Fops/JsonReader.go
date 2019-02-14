@@ -25,3 +25,7 @@ func (j *JsonReader) GetCommandJson(path string) interface{} {
 
 	return model
 }
+
+type IJsonReader interface {
+	GetCommandJson(path string) interface{}
+}

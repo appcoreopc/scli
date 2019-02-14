@@ -37,3 +37,9 @@ func (c *Client) GetJson(targetUrl string, target interface{}) error {
 
 	return json.NewDecoder(r.Body).Decode(target)
 }
+
+type IClientHttp interface {
+	GetJson(targetUrl string, target interface{}) error
+
+	Download(downloadUri string)
+}

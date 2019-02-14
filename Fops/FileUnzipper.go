@@ -73,3 +73,7 @@ func (fz *FileUnzipper) Unzip(zipfile, targetPath string) error {
 	}
 	return nil
 }
+
+type IFileUnzipper interface {
+	Unzip(zipfile, targetPath string) error
+}

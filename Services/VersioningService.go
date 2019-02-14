@@ -7,3 +7,7 @@ type VersioningService struct {
 func (v *VersioningService) CheckVersion(InstalledVersion, CurrentVersion string) {
 
 }
+
+type IVersioningService interface {
+	CheckVersion(InstalledVersion, CurrentVersion string)
+}
