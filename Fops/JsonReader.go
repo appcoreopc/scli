@@ -26,6 +26,22 @@ func (j *JsonReader) GetCommandJson(path string) interface{} {
 	return model
 }
 
+func (j *JsonReader) Deserialize(jsonText string) interface{} {
+
+	var model = Model.CommandCliModel{}
+
+	// f, err := os.Open(path)
+
+	// if err == nil {
+	// 	jsonBytes, _ := ioutil.ReadAll(f)
+	// 	json.Unmarshal(jsonBytes, &model)
+	// }
+
+	// defer f.Close()
+
+	return model
+}
+
 type IJsonReader interface {
 	GetCommandJson(path string) interface{}
 }

@@ -18,11 +18,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/appcoreopc/scli/Fops"
 	"github.com/appcoreopc/scli/Model"
-	"github.com/appcoreopc/scli/Services"
+	"github.com/appcoreopc/scli/Providers"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 var Verbose bool
@@ -47,9 +45,8 @@ to quickly create a Cobra application.`,
 
 func init() {
 
-	fmt.Println("executing main root cmd ")
-	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
-	rootCmd.MarkFlagRequired("verbose")
+	//rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
+	//rootCmd.MarkFlagRequired("verbose")
 
 	//viper.SetConfigName("config") // name of config file (without extension)
 	//viper.AddConfigPath(".")      // optionally look for config in the working directory
@@ -58,31 +55,13 @@ func init() {
 	// 	panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	// }
 
-	viper.AddRemoteProvider("etcd", "http://127.0.0.1:2379", "v2/keys/settings")
-	viper.SetConfigType("json") // because there is no file extension in a stream of bytes, supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop"
-	viper.SetConfigName("settings")
-	viper.ReadRemoteConfig()
+	// viper.AddRemoteProvider("etcd", "http://127.0.0.1:2379", "v2/keys/settings")
+	// viper.SetConfigType("json") // because there is no file extension in a stream of bytes, supported extensions are "json", "toml", "yaml", "yml", "properties", "props", "prop"
+	// viper.SetConfigName("settings")
+	// viper.ReadRemoteConfig()
 }
 
 func Execute() {
-
-	if Verbose == true {
-		fmt.Println("setting to verbose mode")
-	}
-
-	if Verbose == true {
-
-		fmt.Println("value", viper.Get("name"))
-
-		settingModel := &Model.CliSettingsModel{}
-		settingModel.CommandPath = "command.cli" // viper.Get("CommandPath").(string)
-		settingModel.CurrentVersion = 1.0
-		settingModel.InstallVersion = 1.0
-		settingModel.ServiceUrl = "http://test.com/command.cli.zip"
-		svc := Services.CliService{}
-		svc.Execute(settingModel)
-
-	}
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -92,18 +71,22 @@ func Execute() {
 
 func ShowToolsHelp() {
 
-	jr := Fops.JsonReader{}
+	//jr := Fops.JsonReader{}
 
-	cmdJson := jr.GetCommandJson("command.cli/command.cli.json").(Model.CommandCliModel)
+	kv := new(Providers.ConsulClient)
+	cmdJson := kv.GetKeyJson("tools").(Model.CommandCliModel)
+
+	//cmdJson := jr.GetCommandJson("command.cli/command.cli.json").(Model.CommandCliModel)
 
 	fmt.Println("Tools available")
+	fmt.Println("Usage: scli <toolname> <parameter1> <parameter2> ")
+	fmt.Println("Example scli new --name NewProjectName")
 	fmt.Println("--------------------------------------------------------")
 	for _, element := range cmdJson.Tools {
 		fmt.Println("Tool name ", element.Name)
 		fmt.Println("Description ", element.Description)
 		fmt.Println("Version", element.Version)
-		fmt.Println("Commad line", element.Command)
+		fmt.Println("Commandline(<toolname>)", element.Command)
 		fmt.Println("--------------------------------------------------------")
 	}
-
 }
