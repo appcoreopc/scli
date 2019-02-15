@@ -6,13 +6,15 @@
       "name" : "tool1", 
       "description" : "project tools",
       "version" : "v1",
-      "command" : "echo"
+      "command" : "echo",
+      "packageurl" : "http://localhost:8888/1.zip"
     },
     {
       "name" : "tool2", 
       "description" : "provisioning tool",
       "version" : "v1",
-      "command" : "echo"
+      "command" : "echo", 
+      "packageurl" : "http://localhost:8888/2.zip"
     }
   ]
 }

@@ -16,6 +16,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/appcoreopc/scli/Model"
@@ -38,8 +39,24 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		fmt.Println("root called")
-		ShowToolsHelp()
+		kv := new(Providers.ConsulClient)
+		cmdJson := kv.GetKeyJson("tools").(Model.CommandCliModel)
+
+		if args == nil {
+			ShowToolsHelp(&cmdJson.Tools)
+		} else {
+
+			for _, element := range cmdJson.Tools {
+
+				if element.Name == args[0] {
+
+					// check local for exe //
+					log.Println("Execute tooling command")
+
+					//
+				}
+			}
+		}
 	},
 }
 
@@ -69,12 +86,9 @@ func Execute() {
 	}
 }
 
-func ShowToolsHelp() {
+func ShowToolsHelp(tools *[]Model.ToolModel) {
 
 	//jr := Fops.JsonReader{}
-
-	kv := new(Providers.ConsulClient)
-	cmdJson := kv.GetKeyJson("tools").(Model.CommandCliModel)
 
 	//cmdJson := jr.GetCommandJson("command.cli/command.cli.json").(Model.CommandCliModel)
 
@@ -82,7 +96,7 @@ func ShowToolsHelp() {
 	fmt.Println("Usage: scli <toolname> <parameter1> <parameter2> ")
 	fmt.Println("Example scli new --name NewProjectName")
 	fmt.Println("--------------------------------------------------------")
-	for _, element := range cmdJson.Tools {
+	for _, element := range *tools {
 		fmt.Println("Tool name ", element.Name)
 		fmt.Println("Description ", element.Description)
 		fmt.Println("Version", element.Version)

@@ -11,4 +11,5 @@ type ToolModel struct {
 	Description string
 	Version     string
 	Command     string
+	packageurl  string
 }
