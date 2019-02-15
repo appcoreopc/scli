@@ -19,8 +19,11 @@ import (
 	"log"
 	"os"
 
+	"github.com/appcoreopc/scli/Fops"
+
 	"github.com/appcoreopc/scli/Model"
 	"github.com/appcoreopc/scli/Providers"
+	"github.com/appcoreopc/scli/Services"
 	"github.com/spf13/cobra"
 )
 
@@ -39,21 +42,30 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
+		// Get value from consul
 		kv := new(Providers.ConsulClient)
 		cmdJson := kv.GetKeyJson("tools").(Model.CommandCliModel)
 
+		// Read local version info
+		jsonReader := new(Fops.JsonReader)
+		ivInfo := jsonReader.GetCommandJson("command.cli").(Model.CommandCliModel)
+
+		// tenary : haha
+		installedVersion := ivInfo.Version
+
 		if args == nil {
 			ShowToolsHelp(&cmdJson.Tools)
-		} else {
+		} else if len(args) > 0 {
 
 			for _, element := range cmdJson.Tools {
 
 				if element.Name == args[0] {
-
 					// check local for exe //
 					log.Println("Execute tooling command")
 
 					//
+					cliService := new(Services.CliService)
+					cliService.Execute(installedVersion, &element)
 				}
 			}
 		}

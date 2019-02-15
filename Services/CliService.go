@@ -14,16 +14,16 @@ type CliService struct {
 // Any default configuration get from a service
 // which a just a simple key / value db
 
-func (s *CliService) Execute(cliSettingsModel *Model.CliSettingsModel) {
+func (s *CliService) Execute(installVersion int, cliSettingsModel *Model.ToolModel) {
 
 	log.Println("cli service executing")
 
-	if s.InitVersioningCheck(cliSettingsModel.InstallVersion, cliSettingsModel.CurrentVersion) {
+	if s.InitVersioningCheck(installVersion, cliSettingsModel.Version) {
 
-		log.Println("Download package from " + cliSettingsModel.ServiceUrl)
+		log.Println("Download package from " + cliSettingsModel.Packageurl)
 
 		c := HttpClient.Client{}
-		c.Download(cliSettingsModel.ServiceUrl)
+		c.Download(cliSettingsModel.Packageurl)
 
 		// unzip //
 		fz := Fops.FileUnzipper{}
@@ -32,17 +32,17 @@ func (s *CliService) Execute(cliSettingsModel *Model.CliSettingsModel) {
 
 	// Continue reading and displaying help //
 
-	jr := Fops.JsonReader{}
-	jr.GetCommandJson("command.cli/command.cli.json")
+	// jr := Fops.JsonReader{}
+	// jr.GetCommandJson("command.cli/command.cli.json")
 
 }
 
-func (s *CliService) InitVersioningCheck(installedVersion, currentVersion float32) bool {
+func (s *CliService) InitVersioningCheck(installedVersion, currentVersion int) bool {
 	return currentVersion > installedVersion
 }
 
 type ICliService interface {
-	InitVersioningCheck(installedVersion, currentVersion float32) bool
+	InitVersioningCheck(installedVersion, currentVersion int) bool
 
 	Execute(cliSettingsModel *Model.CliSettingsModel)
 }

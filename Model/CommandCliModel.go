@@ -3,13 +3,14 @@ package Model
 type CommandCliModel struct {
 	Name        string
 	Description string
+	Version     int
 	Tools       []ToolModel
 }
 
 type ToolModel struct {
 	Name        string
 	Description string
-	Version     string
+	Version     int
 	Command     string
-	packageurl  string
+	Packageurl  string
 }

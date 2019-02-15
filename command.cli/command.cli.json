@@ -1,6 +1,7 @@
 {
   "name" : "jeremy",
   "desciption" : "kepung@gmail.com",
+  "version" : 0,
   "tools" : [
     {
       "name" : "tool1", 
