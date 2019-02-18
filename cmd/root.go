@@ -48,31 +48,38 @@ to quickly create a Cobra application.`,
 
 		// Read local version info
 		jsonReader := new(Fops.JsonReader)
-		ivInfo := jsonReader.GetCommandJson("command.cli").(Model.CommandCliModel)
+		ivInfo := jsonReader.GetCommandJson("tools/command.cli.json").(Model.CommandCliModel)
 
-		installedVersion := ivInfo.Version
+		ivInfo.Version = 2
+		//installedVersion := ivInfo.Version
 
 		if cmdJson.Version > ivInfo.Version {
-			// Download and self update
 
+			// Download and self update
+			//
 			cliService := new(Services.CliService)
 			cliService.RunSelfUpdate(&cmdJson)
 		}
 
 		if args == nil {
-			ShowToolsHelp(&cmdJson.Tools)
+			ShowToolsHelp(&ivInfo.Tools)
 		} else if len(args) > 0 {
 
-			for _, element := range cmdJson.Tools {
+			for _, element := range ivInfo.Tools {
 
-				if element.Name == args[0] {
+				if element.Command == args[0] {
 					// check local for exe //
-					log.Println("Execute tooling command")
+					log.Println("Execute tooling command", element.Command, element.Arg)
 
-					//
-					cliService := new(Services.CliService)
-					cliService.Execute(installedVersion, &element)
+					//cliService := new(Services.CliService)
+					//cliService.Execute(installedVersion, &element)
+
+					pCmd := new(Fops.ExecProcess)
+					pCmd.ExecuteCommand(element.Command, element.Arg)
+
+					break
 				}
+
 			}
 		}
 	},
