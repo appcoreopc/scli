@@ -18,7 +18,7 @@ func (f *FileService) Exist(path string) bool {
 
 func (f *FileService) RemoveDir(path string) bool {
 
-	err := os.Remove(path)
+	err := os.RemoveAll(path)
 	if err != nil {
 		return true
 	}

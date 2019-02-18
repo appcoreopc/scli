@@ -88,17 +88,24 @@ func (s *CliService) ExecRunSelfUpdate(model *Model.CommandCliModel) {
 
 	log.Println("cli service executing")
 
+	fs := new(Fops.FileService)
+
 	for _, element := range model.Tools {
 
 		fmt.Println("element", element.Packageurl)
 		c := HttpClient.Client{}
 		c.Download(element.Packageurl)
 
+		//rmdir
+
 		// unzip //
 		fz := Fops.FileUnzipper{}
 		targetPath := path.Base(element.Packageurl)
 		var location = strings.TrimSuffix(targetPath, path.Ext(targetPath))
-		fz.Unzip(targetPath, "tools/"+location)
+
+		targetDir := "tools/" + location
+		fs.RemoveDir(targetDir)
+		fz.Unzip(targetPath, targetDir)
 	}
 }
 
