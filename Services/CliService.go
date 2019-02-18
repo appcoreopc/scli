@@ -1,6 +1,7 @@
 package Services
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/appcoreopc/scli/Fops"
@@ -34,6 +35,27 @@ func (s *CliService) Execute(installVersion int, cliSettingsModel *Model.ToolMod
 
 	// jr := Fops.JsonReader{}
 	// jr.GetCommandJson("command.cli/command.cli.json")
+
+}
+
+func (s *CliService) RunSelfUpdate(model *Model.CommandCliModel) {
+
+	log.Println("cli service executing")
+
+	for _, element := range model.Tools {
+
+		fmt.Println("element", element.Packageurl)
+
+		c := HttpClient.Client{}
+		c.Download(element.Packageurl)
+	}
+
+	//log.Println("Download package from " + element.Packageurl)
+
+	// unzip //
+	//fz := Fops.FileUnzipper{}
+	//fz.Unzip("command.cli.zip", ".")
+	//}
 
 }
 

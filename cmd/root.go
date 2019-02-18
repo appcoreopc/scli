@@ -50,8 +50,14 @@ to quickly create a Cobra application.`,
 		jsonReader := new(Fops.JsonReader)
 		ivInfo := jsonReader.GetCommandJson("command.cli").(Model.CommandCliModel)
 
-		// tenary : haha
 		installedVersion := ivInfo.Version
+
+		if cmdJson.Version > ivInfo.Version {
+			// Download and self update
+
+			cliService := new(Services.CliService)
+			cliService.RunSelfUpdate(&cmdJson)
+		}
 
 		if args == nil {
 			ShowToolsHelp(&cmdJson.Tools)
