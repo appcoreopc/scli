@@ -98,7 +98,7 @@ func (s *CliService) ExecRunSelfUpdate(model *Model.CommandCliModel) {
 		fz := Fops.FileUnzipper{}
 		targetPath := path.Base(element.Packageurl)
 		var location = strings.TrimSuffix(targetPath, path.Ext(targetPath))
-		fz.Unzip(targetPath, location)
+		fz.Unzip(targetPath, "tools/"+location)
 	}
 }
 
