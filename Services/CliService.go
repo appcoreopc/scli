@@ -3,6 +3,8 @@ package Services
 import (
 	"fmt"
 	"log"
+	"path"
+	"strings"
 
 	"github.com/appcoreopc/scli/Fops"
 	"github.com/appcoreopc/scli/HttpClient"
@@ -29,6 +31,7 @@ func (s *CliService) Execute(installVersion int, cliSettingsModel *Model.ToolMod
 		// unzip //
 		fz := Fops.FileUnzipper{}
 		fz.Unzip("command.cli.zip", ".")
+
 	}
 
 	// Continue reading and displaying help //
@@ -45,9 +48,14 @@ func (s *CliService) RunSelfUpdate(model *Model.CommandCliModel) {
 	for _, element := range model.Tools {
 
 		fmt.Println("element", element.Packageurl)
-
 		c := HttpClient.Client{}
 		c.Download(element.Packageurl)
+
+		// unzip //
+		fz := Fops.FileUnzipper{}
+		targetPath := path.Base(element.Packageurl)
+		var location = strings.TrimSuffix(targetPath, path.Ext(targetPath))
+		fz.Unzip(targetPath, location)
 	}
 
 	//log.Println("Download package from " + element.Packageurl)
