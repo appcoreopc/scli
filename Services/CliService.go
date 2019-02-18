@@ -5,6 +5,7 @@ import (
 	"log"
 	"path"
 	"strings"
+	"sync"
 
 	"github.com/appcoreopc/scli/Fops"
 	"github.com/appcoreopc/scli/HttpClient"
@@ -12,12 +13,44 @@ import (
 )
 
 type CliService struct {
+	wgOps sync.WaitGroup
 }
 
 // Any default configuration get from a service
 // which a just a simple key / value db
 
 func (s *CliService) Execute(installVersion int, cliSettingsModel *Model.ToolModel) {
+
+	s.wgOps.Add(1)
+
+	go s.RunExecute(installVersion, cliSettingsModel)
+
+	s.wgOps.Wait()
+
+	// log.Println("cli service executing")
+	// if s.InitVersioningCheck(installVersion, cliSettingsModel.Version) {
+
+	// 	log.Println("Download package from " + cliSettingsModel.Packageurl)
+
+	// 	c := HttpClient.Client{}
+	// 	c.Download(cliSettingsModel.Packageurl)
+
+	// 	// unzip //
+	// 	fz := Fops.FileUnzipper{}
+	// 	fz.Unzip("command.cli.zip", ".")
+
+	// }
+
+	// Continue reading and displaying help //
+
+	// jr := Fops.JsonReader{}
+	// jr.GetCommandJson("command.cli/command.cli.json")
+
+}
+
+func (s *CliService) RunExecute(installVersion int, cliSettingsModel *Model.ToolModel) {
+
+	defer s.wgOps.Done()
 
 	log.Println("cli service executing")
 
@@ -35,13 +68,23 @@ func (s *CliService) Execute(installVersion int, cliSettingsModel *Model.ToolMod
 	}
 
 	// Continue reading and displaying help //
-
 	// jr := Fops.JsonReader{}
 	// jr.GetCommandJson("command.cli/command.cli.json")
 
 }
 
 func (s *CliService) RunSelfUpdate(model *Model.CommandCliModel) {
+
+	s.wgOps.Add(1)
+
+	go s.ExecRunSelfUpdate(model)
+
+	s.wgOps.Wait()
+}
+
+func (s *CliService) ExecRunSelfUpdate(model *Model.CommandCliModel) {
+
+	defer s.wgOps.Done()
 
 	log.Println("cli service executing")
 
@@ -57,14 +100,6 @@ func (s *CliService) RunSelfUpdate(model *Model.CommandCliModel) {
 		var location = strings.TrimSuffix(targetPath, path.Ext(targetPath))
 		fz.Unzip(targetPath, location)
 	}
-
-	//log.Println("Download package from " + element.Packageurl)
-
-	// unzip //
-	//fz := Fops.FileUnzipper{}
-	//fz.Unzip("command.cli.zip", ".")
-	//}
-
 }
 
 func (s *CliService) InitVersioningCheck(installedVersion, currentVersion int) bool {
