@@ -89,7 +89,7 @@ func (s *CliService) ExecRunSelfUpdate(model *Model.CommandCliModel) {
 
 	jsonWriter := new(Fops.JsonReader)
 
-	dataJsonBytes, err := json.Marshal(model)
+	dataJsonBytes, err := json.MarshalIndent(model, "", "\t")
 
 	if err != nil {
 		panic(err)
