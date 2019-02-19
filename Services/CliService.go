@@ -1,6 +1,7 @@
 package Services
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"path"
@@ -73,7 +74,7 @@ func (s *CliService) RunExecute(installVersion int, cliSettingsModel *Model.Tool
 
 }
 
-func (s *CliService) RunSelfUpdate(model *Model.CommandCliModel) {
+func (s *CliService) RunUpdate(model *Model.CommandCliModel) {
 
 	s.wgOps.Add(1)
 
@@ -86,7 +87,15 @@ func (s *CliService) ExecRunSelfUpdate(model *Model.CommandCliModel) {
 
 	defer s.wgOps.Done()
 
-	log.Println("cli service executing")
+	jsonWriter := new(Fops.JsonReader)
+
+	dataJsonBytes, err := json.Marshal(model)
+
+	if err != nil {
+		panic(err)
+	}
+
+	jsonWriter.WriteJson("tools/command.cli.json", dataJsonBytes)
 
 	fs := new(Fops.FileService)
 

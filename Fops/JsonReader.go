@@ -26,6 +26,22 @@ func (j *JsonReader) GetCommandJson(path string) interface{} {
 	return model
 }
 
+func (j *JsonReader) WriteJson(path string, content []byte) bool {
+
+	// f, err := os.Create(path)
+	// defer f.Close()
+
+	err := ioutil.WriteFile(path, content, 0644)
+
+	if err != nil {
+		return false
+	}
+
+	// f.Write(content)
+
+	return true
+}
+
 func (j *JsonReader) Deserialize(jsonText string) interface{} {
 
 	var model = Model.CommandCliModel{}
